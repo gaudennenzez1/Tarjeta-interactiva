@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tarjeta Interactiva</title>
+
+  <!-- Estilos CSS -->
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet"> <!-- Fuente Dancing Script -->
+
+  <style>
+    /* Estilos generales */
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #fef3f3;
+      font-family: 'Dancing Script', cursive;
+    }
+
+    /* Animaciones y elementos visuales */
+    /* Fondo de corazones flotantes */
+    .heart {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: #ff6b6b;
+      transform: rotate(45deg);
+      animation: floatUp 7s infinite ease-in-out;
+      border-radius: 50% 50% 0 0;
+    }
+
+    /* Fondo de corazones flotantes */
+    .heart {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: #ff6b6b;
+      transform: rotate(45deg);
+      animation: floatUp 7s infinite ease-in-out;
+      border-radius: 50% 50% 0 0;
+    }
+
+    .heart::before, 
+    .heart::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: #ff6b6b;
+      border-radius: 50%;
+    }
+    .heart::before { top: -10px; left: 0; }
+    .heart::after { top: 0; left: -10px; }
+
+    @keyframes floatUp {
+      0% { transform: scale(0.5) translateY(0); opacity: 1; }
+      100% { transform: scale(1.2) translateY(-100vh); opacity: 0; }
+    }
+
+    /* Estilo de la portada */
+    .cover {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #fef3f3;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      transition: opacity 1s;
+      animation: coverAnimation 2s ease-out;
+    }
+    @keyframes coverAnimation {
+      0% { opacity: 0; transform: translateY(50px); }
+      50% { opacity: 1; transform: translateY(-15px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .cover h1 {
+      font-size: 3rem;
+      color: #ff4c4c;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+      animation: bounce 2s ease-in-out;
+    }
+    @keyframes bounce {
+      0% { transform: translateY(0); }
+      30% { transform: translateY(-10px); }
+      50% { transform: translateY(5px); }
+      70% { transform: translateY(-3px); }
+      100% { transform: translateY(0); }
+    }
+
+    .open-button {
+      padding: 15px 30px;
+      font-size: 1.5rem;
+      color: white;
+      background-color: #ff6b6b;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      animation: slideIn 2s ease-out;
+      font-family: 'Dancing Script', cursive;
+    }
+    @keyframes slideIn {
+      0% { transform: translateY(30px); }
+      100% { transform: translateY(0); }
+    }
+    .open-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Contenedor de mensajes */
+    .message-container {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+    .message {
+      font-size: 2.5rem;
+      color: #ff6b6b;
+      font-weight: bold;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+      margin-bottom: 20px;
+      animation: shadowEffect 3s infinite alternate;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+    @keyframes shadowEffect {
+      0% { text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); }
+      100% { text-shadow: 4px 4px 6px rgba(0, 0, 0, 0.5); }
+    }
+
+    /* Botón para mostrar siguiente contenido */
+    .next-button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      background-color: #ff6b6b;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-family: 'Dancing Script', cursive;
+    }
+
+    /* Galería */
+    .gallery-container {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      background-color: #fef3f3;
+      flex-direction: column;
+    }
+    .gallery {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .gallery img {
+      max-width: 60%;
+      height: auto;
+      border: 5px solid #ff6b6b;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      transition: transform 0.5s ease;
+    }
+    .gallery img:hover { transform: scale(1.05); }
+
+    /* Botones de navegación */
+    .gallery-button {
+      background-color: #ff6b6b;
+      color: white;
+      font-size: 2rem;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      cursor: pointer;
+      margin: 0 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s;
+    }
+    gallery-button:hover {
+      background-color: #ff4c4c;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+      
+    }
+
+    /* Control de música */
+    .music-button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      color: white;
+      background-color: #ff6b6b;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      margin-top: 20px;
+      font-family: 'Dancing Script', cursive;
+    }
+
+    .music-button:hover {
+      background-color: #ff4c4c;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Portada -->
+  <div class="cover">
+    <h1>Bienvenida a nuestra historia</h1>
+    <button class="open-button" onclick="openCard()">Haz clic para abrir</button>
+    <button class="music-button" onclick="toggleMusic()">Iniciar Música</button>
+  </div>
+
+  <!-- Mensajes -->
+  <div class="message-container">
+    <div class="message" id="message-1">"Amor, cada día contigo es un sueño hecho realidad."</div>
+    <div class="message" id="message-2" style="display: none;">"Gracias amor por ser mi mayor apoyo y alegría</div>
+    <div class="message" id="message-3" style="display: none;">"Eres mi persona favorita, mi amor eterno</div>
+    <div class="message" id="message-4" style="display: none;">"Contigo cada momento se siente mágico</div>
+    <div class="message" id="message-5" style="display: none;">"Y si por si no sabes a quien me refiero, a continuación te mostraré a la belleza que tengo a mi lado</div>
+    <button class="next-button" onclick="showNext()">Continuar</button>
+  </div>
+
+  <!-- Galería -->
+<div class="gallery-container">
+  <div class="gallery">
+    <button class="gallery-button" onclick="prevImage()">❮</button>
+    <img id="gallery-image" src="img/IMG-20241115-WA0026.jpg" alt="Galería de recuerdos" width="400" height="300">>
+    <button class="gallery-button" onclick="nextImage()">❯</button>
+  </div>
+
+  <!-- Enlace al final de la galería -->
+  <div class="final-link-container" style="display: none; text-align: center; margin-top: 20px;">
+    <a href="https://gaudennenzez1.github.io/aventura-romantica/" style="font-size: 1.2rem; color: #ff6b6b; text-decoration: none;">
+      Haz clic aquí para algo especial
+    </a>
+  </div>
+</div>
+
+  <!-- Audio -->
+  <audio id="background-audio" loop>
+    <source src="audios/Die-With-A-Smile.mp3" type="audio/mp3">
+  </audio>
+
+  <!-- JavaScript -->
+  <script>
+    // Variables
+    const audio = document.getElementById('background-audio');
+    const images = ["img/IMG-20241115-WA0028.jpg", "img/IMG-20241115-WA0024.jpg", 
+                     "img/IMG-20241115-WA0029.jpg", 'img/IMG-20241115-WA0030.jpg', 'img/IMG-20241115-WA0019.jpg', 
+                     'img/IMG-20241115-WA0020.jpg', 'img/IMG-20241115-WA0023.jpg']; // Sustituir con imágenes reales
+    let currentIndex = 0;
+
+    // Funciones
+    function toggleMusic() {
+      if (audio.paused) {
+        audio.play();
+        document.querySelector('.music-button').textContent = 'Pausar Música';
+      } else {
+        audio.pause();
+        document.querySelector('.music-button').textContent = 'Iniciar Música';
+      }
+    }
+
+    // Mostrar mensajes tras abrir la tarjeta
+    function openCard() {
+      document.querySelector('.cover').style.display = 'none';
+      document.querySelector('.message-container').style.display = 'block';
+    }
+
+    // Variables para los mensajes
+let currentMessageIndex = 1; // Índice del mensaje actual (empieza desde el primer mensaje)
+const totalMessages = 5; // Cambiar según la cantidad total de mensajes
+
+function showNext() {
+  // Ocultar el mensaje actual
+  const currentMessage = document.getElementById(`message-${currentMessageIndex}`);
+  currentMessage.style.display = 'none';
+
+  // Incrementar el índice para mostrar el siguiente mensaje
+  currentMessageIndex++;
+
+  // Verificar si todavía hay mensajes por mostrar
+  if (currentMessageIndex > totalMessages) {
+    // Si no hay más mensajes, pasar a la galería
+    document.querySelector('.message-container').style.display = 'none';
+    document.querySelector('.gallery-container').style.display = 'flex';
+  } else {
+    // Mostrar el siguiente mensaje
+    const nextMessage = document.getElementById(`message-${currentMessageIndex}`);
+    nextMessage.style.display = 'block';
+  }
+}
+
+    function updateImage() {
+      document.getElementById('gallery-image').src = images[currentIndex];
+    }
+
+    // Función para actualizar la imagen mostrada
+function updateImage() {
+  document.getElementById('gallery-image').src = images[currentIndex];
+}
+
+// Función para avanzar a la siguiente imagen
+function nextImage() {
+  // Avanzar en la lista de imágenes
+  currentIndex = (currentIndex + 1) % images.length;
+  updateImage();
+
+  // Verificar si estamos en la última imagen
+  if (currentIndex === images.length - 1) {
+    showLink();
+  } else {
+    hideLink(); // Si se retrocede, esconder el enlace
+  }
+}
+
+// Función para retroceder a la imagen anterior
+function prevImage() {
+  // Retroceder en la lista de imágenes
+  currentIndex = (currentIndex - 1 + images.length) % images.length;
+  updateImage();
+
+  // Ocultar el enlace al retroceder
+  hideLink();
+}
+
+// Función para mostrar el enlace
+function showLink() {
+  document.querySelector('.final-link-container').style.display = 'block';
+}
+
+// Función para ocultar el enlace
+function hideLink() {
+  document.querySelector('.final-link-container').style.display = 'none';
+}
+
+
+
+    function prevImage() {
+      currentIndex = (currentIndex - 1 + images.length) % images.length;
+      updateImage();
+    }
+
+    // Generar corazones flotantes ilimitados
+    function createHearts() {
+      const body = document.body;
+      const heart = ['❤️']; // Emojis a utilizar
+      const maxHearts = 50;  // Número máximo de corazones visibles en pantalla al mismo tiempo
+
+      setInterval(() => {
+        const heart = document.createElement('div');
+        heart.className = 'heart';
+        heart.textContent = heart[Math.floor(Math.random() * heart.length)];
+        heart.style.left = `${Math.random() * 100}vw`; // Posición aleatoria
+        heart.style.top = `990px`; // Comienza fuera de la pantalla
+        heart.style.fontSize = `${Math.random() * 3 + 2}rem`; //tamaño aleatorio
+        heart.style.animationDuration = `${Math.random() * 1 + 4}s`; // Duración aleatoria
+        body.appendChild(heart);
+
+        setTimeout(() => body.removeChild(heart), 8000); // Eliminar después de la animación
+      }, 500); // Generar un corazón cada 500ms
+    }
+
+    // Llamar a la función para crear corazones al cargar la página
+    createHearts();
+  </script>
+
+</body>
+</html>
